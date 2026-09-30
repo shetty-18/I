@@ -1,0 +1,596 @@
+27/11/26
+
+1. Develop a program to blink 5 LEDs back & forth
+
+Blinking
+
+Code:
+
+void setup() {
+  pinMode(8, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(8, HIGH);
+  delay(500);
+  digitalWrite(8, LOW);
+  delay(500);
+}
+
+Scrolling
+
+Arduino
+
+- GND
+- Pin 2
+- Pin 4
+- Pin 6
+- Pin 8
+- Pin 103. LED Scrolling Program
+
+void setup() {
+  pinMode(8, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(10, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(8, HIGH);
+  delay(500);
+  digitalWrite(8, LOW);
+  delay(500);
+
+  digitalWrite(2, HIGH);
+  delay(500);
+  digitalWrite(2, LOW);
+  delay(500);
+
+  digitalWrite(4, HIGH);
+  delay(500);
+  digitalWrite(4, LOW);
+  delay(500);
+
+  digitalWrite(6, HIGH);
+  delay(500);
+  digitalWrite(6, LOW);
+  delay(500);
+
+  digitalWrite(10, HIGH);
+  delay(500);
+  digitalWrite(10, LOW);
+  delay(500);
+}
+
+---
+
+8. Develop a program to interface relay with Arduino board
+
+Code
+
+void setup() {
+  pinMode(5, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(5, HIGH);
+  delay(500);
+  digitalWrite(5, LOW);
+  delay(500);
+}
+
+---
+
+9. Develop a program to demonstrate weather station readings using DHT11
+
+Connections
+
+DHT Sensor → Arduino
+
+- GND → GND
+- DATA → Pin 2
+- VCC → 5V
+
+Program
+
+#include "DHT.h"
+
+#define DHTPIN 2
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  pinMode(DHTPIN, DHTTYPE);
+  Serial.begin(9600);
+  Serial.println("Weather Station");
+}
+
+void loop() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  float f = dht.readTemperature(true);
+
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  Serial.print("Humidity: ");
+  Serial.print(h);
+  Serial.print("%\t");
+  Serial.print("Temperature: ");
+  Serial.print(t);
+  Serial.print(" C ");
+  Serial.print(f);
+  Serial.println(" F");
+
+  delay(2000);
+}
+
+Output
+
+Humidity: 72.00%   Temperature: 26.20°C 79.16°F
+Humidity: 73.00%   Temperature: 26.20°C 79.16°F
+Humidity: 73.00%   Temperature: 26.70°C 80.06°F
+
+---
+
+10. Develop a water level depth detection system
+
+Reference
+
+Ultrasonic Sensor → Arduino
+
+VCC  → 5V
+TRIG → 9
+ECHO → 10
+GND  → GND
+
+Variables
+
+long duration;
+float distance;
+float tankHeight = 30.0;
+float waterLevel;
+
+Program
+
+void setup() {
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(13, OUTPUT);
+
+  Serial.begin(9600);
+  Serial.println("Water Level Detection System");
+}
+
+void loop() {
+  digitalWrite(9, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(9, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(9, LOW);
+
+  duration = pulseIn(10, HIGH);
+
+  distance = duration * 0.03432;
+
+  waterLevel = tankHeight - distance;
+
+  Serial.print("Distance from sensor: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  Serial.print("Water Level: ");
+  Serial.print(waterLevel);
+  Serial.println(" cm");
+
+  if (waterLevel < 10) {
+    Serial.println("Water Level LOW");
+    digitalWrite(13, HIGH);
+  } else {
+    Serial.println("Water Level NORMAL");
+    digitalWrite(13, LOW);
+  }
+
+  delay(1000);
+}
+
+Output
+
+Distance from sensor: 7.00
+Water Level: 23.36 cm
+Water Level: NORMAL
+
+Distance from sensor: 7.00
+Water Level: 19.36 cm
+Water Level: LOW3) Intrusion Detection System Using Ultrasonic and Sound Sensors
+
+Question: Develop a program to deploy an intrusion detection system using ultrasonic and sound sensors.
+
+Program
+
+long duration;
+float distance;
+
+void setup()
+{
+  pinMode(9, OUTPUT);
+  pinMode(10, INPUT);
+  pinMode(8, OUTPUT);
+  pinMode(13, OUTPUT);
+
+  Serial.begin(9600);
+  Serial.println("Intrusion Detection System");
+}
+
+void loop()
+{
+  digitalWrite(9, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(9, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(9, LOW);
+
+  duration = pulseIn(10, HIGH);
+  distance = duration * 0.0343 / 2;
+
+  if (distance < 10)
+  {
+    digitalWrite(8, HIGH);
+    tone(8, 1000);
+    delay(500);
+  }
+  else
+  {
+    digitalWrite(13, LOW);
+    noTone(8);
+    delay(1000);
+  }
+
+  delay(300);
+}
+
+Output / Message:
+
+>> INTRUDER DETECTED <<
+Intrusion Detection System
+
+---
+
+6) Moisture Sensor
+
+Question: Develop a program to classify dry and wet soil with the moisture sensor.
+
+Program
+
+int moisture_value;
+float moisture_percentage;
+
+void setup()
+{
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  moisture_value = analogRead(A0);
+
+  moisture_percentage =
+    ((moisture_value / 539.00) * 100);
+
+  if (moisture_percentage < 100)
+  {
+    digitalWrite(6, HIGH);
+    digitalWrite(7, LOW);
+  }
+  else
+  {
+    digitalWrite(6, LOW);
+    digitalWrite(7, HIGH);
+  }
+
+  Serial.println("Moisture Value:");
+  Serial.println(moisture_percentage);
+
+  delay(1000);
+}
+
+Output
+
+Moisture Value: 76.49% (without dip)
+Moisture Value: 189.00% (with dip)
+
+---
+
+7) DC Motor Control
+
+Question: Develop a program to control a DC motor with L293D motor driver board.
+
+int m1 = 8;
+int m2 = 7;
+
+void setup()
+{
+  pinMode(m1, OUTPUT);
+  pinMode(m2, OUTPUT);
+
+  digitalWrite(m1, LOW);
+  digitalWrite(m2, LOW);
+}
+
+void loop()
+{
+  digitalWrite(m1, HIGH);
+  digitalWrite(m2, LOW);
+  delay(2000);
+
+  digitalWrite(m1, LOW);
+  digitalWrite(m2, HIGH);
+  delay(2000);
+
+  digitalWrite(m1, LOW);
+  digitalWrite(m2, LOW);
+}
+
+Motor Direction
+
+LOW  → OFF
+
+HIGH LOW → Clockwise
+
+LOW HIGH → Anticlockwise
+
+Output
+
+Here we can control DC motor by Arduino board.
+When m1 is OFF and m2 is HIGH, LOW then it will create clock pulse.
+When m1 is low and m2 is high, anticlockwise.
+
+---
+
+5) Street Light System Using LDR Sensor
+
+Question: Develop a program to deploy a smart street light system using LDR sensor.
+
+Program
+
+void setup()
+{
+  pinMode(A0, INPUT);
+  pinMode(2, OUTPUT);
+}
+
+void loop()
+{
+  int ldrValue = analogRead(A0);
+
+  int ledValue = map(ldrValue, 0, 1023, 0, 255);
+
+  analogWrite(2, ledValue);
+
+  delay(300);
+}
+
+Output
+
+Street light system using LDR sensor.
+
+When LDR value is bright, LED will be OFF.
+When LDR value is dark, LED will be ON.
+
+---
+
+9) pH Value Measurement
+
+Question: Develop a program to read the pH value of a liquid for a mango and water.
+
+Connections
+
+Arduino UNO       pH Sensor
+
+5V        →       VCC
+GND       →       GND
+A0        →       pH
+
+Program
+
+void setup()
+{
+  pinMode(A0, INPUT);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  int sen_value = analogRead(A0);
+
+  float pH = map(sen_value, 0, 1023, 0, 14);
+
+  Serial.println(pH);
+
+  delay(600);
+}
+
+Output
+
+pH value: 9 (Creator)
+pH value: 12 (Cooperator)10) Develop a program to detect gas leakage using MQ sensor
+
+Program
+
+void setup()
+{
+  pinMode(2, OUTPUT);
+  pinMode(A0, INPUT);
+
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  int gas_value = analogRead(A0);
+  int gas_value = map(gas_value, 0, 1023, 0, 300);
+
+  Serial.println(gas_value);
+
+  if (gas_value > 300)
+  {
+    tone(2, 1000);
+    Serial.println("Gas Leakage Detected");
+  }
+  else
+  {
+    noTone(2);
+    Serial.println("Safe mode");
+  }
+
+  delay(1000);
+}
+
+Output
+
+123
+Safe Mode
+
+125
+Safe Mode
+
+183
+Gas Leakage Detected
+
+182
+Gas Leakage Detected
+
+---
+
+12) Develop a program to interface the keypad module to Arduino
+
+Connections
+
+Arduino UNO       Keypad
+
+9  ───────────────
+8  ───────────────
+7  ───────────────
+6  ───────────────
+5  ───────────────
+4  ───────────────
+3  ───────────────
+2  ───────────────
+
+Program
+
+#include <Keypad.h>
+
+const byte numRows = 4;
+const byte numCols = 4;
+
+char keymap[numRows][numCols] =
+{
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
+};
+
+byte rowPins[numRows] = {9, 8, 7, 6};
+byte colPins[numCols] = {5, 4, 3, 2};
+
+Keypad myKeypad = Keypad(
+  makeKeymap(keymap),
+  rowPins,
+  colPins,
+  numRows,
+  numCols
+);
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  char keypressed = myKeypad.getKey();
+
+  if (keypressed != NO_KEY)
+  {
+    Serial.println(keypressed);
+  }
+}
+
+Output
+
+8
+A
+6
+7
+B
+5
+1
+2
+
+---
+
+10) Develop a program to set up a UART protocol and pair Arduino through the protocol
+
+Connection
+
+        Arduino UNO              Arduino UNO
+             TX  ──────────────── RX
+             RX  ──────────────── TX
+            GND  ─────────────── GND
+
+Sender Code
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  Serial.println("Hello from Arduino!");
+  delay(1000);
+}
+
+Receiver Code
+
+void setup()
+{
+  Serial.begin(9600);
+  Serial.setTimeout(1000);
+}
+
+void loop()
+{
+  if (Serial.available())
+  {
+    String receivedString = Serial.readStringUntil('\n');
+
+    Serial.println("Arduino Received:");
+    Serial.println(receivedString);
+  }
+}
+
+Output
+
+Sender:
+
+Hello from Arduino!
+Hello from Arduino!
+
+Receiver:
+
+Arduino Received: Hello from Arduino!
+Arduino Received: Hello from Arduino!
